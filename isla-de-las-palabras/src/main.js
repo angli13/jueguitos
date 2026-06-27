@@ -164,10 +164,19 @@
     });
   }
 
+  // Recalcula el canvas cuando el dispositivo rota o la ventana cambia de tamaño.
+  var resizeTimer;
+  function onResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { window.Isla.canvas.resize(); }, 120);
+  }
+
   function init() {
     window.Isla.canvas.init(ui.$('area-escritura'));
     window.Isla.world.init(ui.$('isla-svg'));
     bind();
+    window.addEventListener('resize', onResize);
+    screen.orientation && screen.orientation.addEventListener('change', onResize);
     ui.renderInicio();
     ui.showScreen('pantalla-inicio');
     if (!window.Isla.audio.available()) {

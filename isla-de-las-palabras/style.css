@@ -1,5 +1,6 @@
 /* style.css — La Isla de las Palabras
-   Diseño para niños de 5-7: botones enormes, colores vivos, texto mínimo. */
+   Diseño para niños de 5-7: botones enormes, colores vivos, texto mínimo.
+   Mobile-first: safe areas, dvh, retina-ready. */
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -11,19 +12,39 @@
   --rojo: #ff5a3c;
   --amarillo: #ffd23c;
   --tinta: #2b3a55;
+  /* Espacios seguros para notch / home indicator */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-html, body {
-  margin: 0; padding: 0; height: 100%;
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0; padding: 0;
+  height: 100%;
   font-family: "Comic Sans MS", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
   color: var(--tinta);
   background: linear-gradient(180deg, var(--azul-claro) 0%, #e9fff0 100%);
   overflow: hidden;
   user-select: none; -webkit-user-select: none;
   touch-action: manipulation;
+  /* Fija el fondo para evitar el "bounce" elástico de iOS que expone
+     fondo blanco al sobredesplazar */
+  overscroll-behavior: none;
 }
 
-#app { position: relative; width: 100vw; height: 100vh; }
+#app {
+  position: relative;
+  width: 100%;
+  /* 100dvh = dynamic viewport height: excluye chrome del navegador aunque aparezca.
+     Fallback 100vh para navegadores más viejos. */
+  height: 100vh;
+  height: 100dvh;
+}
 
 /* ---------- pantallas ---------- */
 .pantalla {
@@ -32,8 +53,10 @@ html, body {
   flex-direction: column;
   align-items: center; justify-content: center;
   gap: 18px;
-  padding: 20px;
+  /* Padding base + safe areas para notch / home indicator */
+  padding: calc(20px + var(--safe-top)) 20px calc(20px + var(--safe-bottom));
   text-align: center;
+  overflow: hidden;
 }
 .pantalla.activa { display: flex; }
 
@@ -46,7 +69,7 @@ h3 { color: var(--tinta); margin: 14px 0 6px; }
 /* ---------- botones ---------- */
 .boton-gigante {
   font-family: inherit;
-  font-size: clamp(22px, 5vw, 32px);
+  font-size: clamp(20px, 5vw, 32px);
   font-weight: bold;
   color: #fff;
   background: var(--verde);
@@ -55,6 +78,8 @@ h3 { color: var(--tinta); margin: 14px 0 6px; }
   box-shadow: 0 6px 0 #2c9a4e, 0 8px 18px rgba(0,0,0,0.18);
   cursor: pointer;
   transition: transform 0.08s, box-shadow 0.08s;
+  /* Touch: mínimo 48px de alto para facilidad de toque */
+  min-height: 56px;
 }
 .boton-gigante:active { transform: translateY(4px); box-shadow: 0 2px 0 #2c9a4e; }
 
@@ -63,92 +88,148 @@ h3 { color: var(--tinta); margin: 14px 0 6px; }
   color: var(--azul); background: #fff;
   border: 3px solid var(--azul); border-radius: 22px;
   padding: 10px 24px; cursor: pointer; font-weight: bold;
+  min-height: 48px;
 }
 .boton-secundario.peligro { color: var(--rojo); border-color: var(--rojo); }
 
 .boton-icono {
-  font-size: 26px; background: #fff; border: 3px solid var(--azul-claro);
-  border-radius: 50%; width: 56px; height: 56px; cursor: pointer; line-height: 1;
+  font-size: 22px; background: #fff; border: 3px solid var(--azul-claro);
+  border-radius: 50%;
+  /* Mínimo 48×48 para área de toque cómoda */
+  width: 52px; height: 52px;
+  flex-shrink: 0;
+  cursor: pointer; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
 }
 
 /* ---------- pantalla de juego ---------- */
-#pantalla-juego { justify-content: flex-start; gap: 10px; padding: 12px; }
+#pantalla-juego {
+  justify-content: flex-start;
+  gap: 8px;
+  /* Padding reducido + safe areas */
+  padding: calc(10px + var(--safe-top)) 12px calc(10px + var(--safe-bottom));
+}
 
 .barra-juego {
-  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  flex-shrink: 0;
 }
 .mision {
-  flex: 1; font-size: clamp(18px, 4.5vw, 28px); font-weight: bold; color: var(--azul);
-  background: #fff; border-radius: 18px; padding: 10px 14px; box-shadow: 0 3px 0 rgba(0,0,0,0.08);
+  flex: 1; font-size: clamp(16px, 4.5vw, 26px); font-weight: bold; color: var(--azul);
+  background: #fff; border-radius: 18px; padding: 9px 12px; box-shadow: 0 3px 0 rgba(0,0,0,0.08);
 }
 
 .area-escritura {
-  position: relative; width: 100%; flex: 1;
+  position: relative; width: 100%;
+  flex: 1;
+  /* Permite que el área se contraiga cuando aparece el feedback, evitando
+     que los botones se salgan de pantalla */
+  min-height: clamp(100px, 35vh, 220px);
   background: #fffef7;
   border: 4px dashed var(--amarillo);
   border-radius: 24px;
   overflow: hidden;
-  min-height: 220px;
   box-shadow: inset 0 0 0 4px #fff;
 }
-.area-escritura canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+/* Los canvas ocupan el 100% del área tanto en CSS como en atributos físicos
+   (la resolución se ajusta a devicePixelRatio en canvas.js) */
+.area-escritura canvas {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+  touch-action: none;
+}
 .capa-guia { pointer-events: none; }
 .capa-tinta { cursor: crosshair; }
 
 .feedback {
-  width: 100%; font-size: clamp(18px, 4.5vw, 26px); font-weight: bold;
-  padding: 10px; border-radius: 16px; min-height: 1.4em;
+  flex-shrink: 0;
+  width: 100%; font-size: clamp(16px, 4.5vw, 24px); font-weight: bold;
+  padding: 9px 12px; border-radius: 16px;
+  /* Altura fija para que al aparecer no empuje los botones de pantalla pequeña */
+  min-height: 44px;
+  display: flex; align-items: center; justify-content: center;
 }
 .feedback.feliz { background: #d6ffe0; color: #1e8a44; }
 .feedback.animo { background: #fff0d6; color: #c9750f; }
 
-.barra-acciones { width: 100%; display: flex; gap: 14px; }
+.barra-acciones {
+  flex-shrink: 0;
+  width: 100%; display: flex; gap: 12px;
+}
 .boton-accion {
-  flex: 1; font-family: inherit; font-size: clamp(20px, 5vw, 28px); font-weight: bold;
-  color: #fff; border: none; border-radius: 24px; padding: 16px; cursor: pointer;
+  flex: 1; font-family: inherit; font-size: clamp(18px, 5vw, 28px); font-weight: bold;
+  color: #fff; border: none; border-radius: 24px; padding: 14px 8px; cursor: pointer;
+  min-height: 52px;
 }
 .boton-accion.borrar { background: #9aa6bf; box-shadow: 0 5px 0 #7c879e; }
-.boton-accion.listo { background: var(--naranja); box-shadow: 0 5px 0 #d96e22; }
+.boton-accion.listo  { background: var(--naranja); box-shadow: 0 5px 0 #d96e22; }
 .boton-accion:active { transform: translateY(3px); }
 
 /* ---------- recompensas ---------- */
-.capa-confeti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.capa-confeti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 20; }
 .confeti { position: absolute; top: -30px; animation: caer linear forwards; }
 @keyframes caer {
-  0% { transform: translateY(0) rotate(0); opacity: 1; }
-  100% { transform: translateY(110vh) rotate(360deg); opacity: 0.9; }
+  0%   { transform: translateY(0) rotate(0); opacity: 1; }
+  100% { transform: translateY(110dvh) rotate(360deg); opacity: 0.9; }
 }
 .cartel-pieza {
   position: absolute; top: 18%; left: 50%; transform: translateX(-50%);
   background: var(--amarillo); color: var(--tinta); font-weight: bold;
-  font-size: clamp(18px, 4.5vw, 26px); padding: 14px 22px; border-radius: 20px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.25); white-space: nowrap;
+  font-size: clamp(16px, 4.5vw, 24px);
+  padding: 14px 20px; border-radius: 20px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  /* nowrap eliminado: en pantallas estrechas puede necesitar wrappear */
+  white-space: normal;
+  text-align: center;
+  max-width: 90%;
+  z-index: 21;
 }
 .cartel-pieza.aparece { animation: pop 0.4s ease; }
 .pieza-pop { animation: pop 0.5s ease; transform-origin: center; transform-box: fill-box; }
 @keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.25); } 100% { transform: scale(1); } }
 
 /* ---------- resumen ---------- */
-.resumen-grid, .stats-grid { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.resumen-grid, .stats-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
 .resumen-item, .stat {
-  background: #fff; border-radius: 20px; padding: 16px 20px; min-width: 110px;
+  background: #fff; border-radius: 20px; padding: 14px 18px; min-width: 100px;
   display: flex; flex-direction: column; gap: 4px; box-shadow: 0 4px 0 rgba(0,0,0,0.08);
 }
-.num, .stat-num { font-size: clamp(26px, 7vw, 40px); font-weight: bold; color: var(--azul); }
-.stat span:last-child, .resumen-item span:last-child { font-size: 14px; color: #667; }
+.num, .stat-num { font-size: clamp(24px, 7vw, 40px); font-weight: bold; color: var(--azul); }
+.stat span:last-child, .resumen-item span:last-child { font-size: 13px; color: #667; }
 
 /* ---------- mundo ---------- */
 .isla { width: min(92vw, 700px); height: auto; border-radius: 20px; background: #bfe9ff; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
 .mundo-progreso { font-weight: bold; color: var(--tinta); }
 
 /* ---------- padres ---------- */
-.verja { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.verja-pregunta { font-size: clamp(22px, 6vw, 34px); font-weight: bold; color: var(--azul); }
+/* Panel scrolleable en pantallas pequeñas */
+#pantalla-padres {
+  justify-content: flex-start;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  /* El scroll empieza después del área segura de la barra */
+  padding-top: max(24px, calc(24px + var(--safe-top)));
+}
+.verja { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; }
+.verja-pregunta { font-size: clamp(22px, 6vw, 34px); font-weight: bold; color: var(--azul); margin: 0; }
 .verja-input {
+  /* font-size >= 16px evita que iOS haga zoom automático al enfocar el input */
   font-size: 28px; text-align: center; width: 140px; padding: 10px; border-radius: 16px;
   border: 3px solid var(--azul); font-family: inherit;
 }
+#padres-contenido { width: 100%; max-width: 600px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 90vw; }
 .chip { background: #fff0d6; color: #c9750f; border-radius: 14px; padding: 6px 12px; font-weight: bold; }
 
 .oculto { display: none !important; }
+
+/* ---------- modo landscape en teléfono (pantalla baja) ---------- */
+@media (max-height: 480px) {
+  #pantalla-juego { gap: 5px; padding-top: max(6px, var(--safe-top)); padding-bottom: max(6px, var(--safe-bottom)); }
+  .barra-juego { gap: 5px; }
+  .boton-icono { width: 42px; height: 42px; font-size: 18px; }
+  .mision { padding: 6px 10px; font-size: clamp(13px, 3.5vw, 18px); }
+  .feedback { padding: 6px 10px; min-height: 36px; font-size: clamp(13px, 3.5vw, 18px); }
+  .boton-accion { padding: 10px 8px; font-size: clamp(15px, 4vw, 22px); min-height: 42px; }
+  .area-escritura { border-radius: 16px; }
+}
