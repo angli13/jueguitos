@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#7ec8e3" />
+  <title>La Isla de las Palabras</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ===================== INICIO ===================== -->
+    <section id="pantalla-inicio" class="pantalla activa">
+      <h1 class="titulo">🏝️ La Isla de<br />las Palabras</h1>
+      <p id="inicio-racha" class="racha">¡Empieza tu aventura!</p>
+      <button id="btn-jugar" class="boton-gigante">▶ ¡Jugar!</button>
+      <button id="btn-padres" class="boton-secundario">👨‍👩‍👧 Para papás</button>
+    </section>
+
+    <!-- ===================== JUEGO ===================== -->
+    <section id="pantalla-juego" class="pantalla">
+      <header class="barra-juego">
+        <button id="btn-salir" class="boton-icono" title="Salir">✕</button>
+        <span id="mision" class="mision">✏️ Escribe la palabra</span>
+        <button id="btn-repetir" class="boton-icono" title="Escuchar otra vez">🔊</button>
+      </header>
+
+      <div id="area-escritura" class="area-escritura"></div>
+
+      <div id="feedback" class="feedback oculto"></div>
+
+      <footer class="barra-acciones">
+        <button id="btn-borrar" class="boton-accion borrar">↩ Borrar</button>
+        <button id="btn-listo" class="boton-accion listo">✓ ¡Listo!</button>
+      </footer>
+
+      <!-- capas de recompensa -->
+      <div id="capa-confeti" class="capa-confeti"></div>
+      <div id="cartel-pieza" class="cartel-pieza oculto"></div>
+    </section>
+
+    <!-- ===================== RESUMEN DEL DÍA ===================== -->
+    <section id="pantalla-resumen" class="pantalla">
+      <h2>🎉 ¡Buen trabajo!</h2>
+      <div class="resumen-grid">
+        <div class="resumen-item"><span class="num" id="resumen-palabras">0</span><span>palabras hoy</span></div>
+        <div class="resumen-item"><span class="num" id="resumen-isla">0</span><span>isla construida</span></div>
+        <div class="resumen-item"><span class="num" id="resumen-racha">1</span><span>días seguidos</span></div>
+      </div>
+      <button id="btn-seguir" class="boton-gigante">▶ Seguir jugando</button>
+      <button id="btn-ver-isla" class="boton-secundario">🏝️ Ver mi isla</button>
+      <button id="btn-terminar" class="boton-secundario">🏠 Terminar por hoy</button>
+    </section>
+
+    <!-- ===================== MUNDO / ISLA ===================== -->
+    <section id="pantalla-mundo" class="pantalla">
+      <h2>🏝️ Mi Isla</h2>
+      <svg id="isla-svg" viewBox="0 0 800 400" class="isla"></svg>
+      <p id="mundo-progreso" class="mundo-progreso"></p>
+      <button id="btn-mundo-volver" class="boton-gigante">⬅ Volver</button>
+    </section>
+
+    <!-- ===================== PADRES ===================== -->
+    <section id="pantalla-padres" class="pantalla">
+      <h2>👨‍👩‍👧 Panel de papás</h2>
+
+      <!-- verja anti-niño -->
+      <div id="verja" class="verja oculto">
+        <p>Para entrar, resuelve:</p>
+        <p id="verja-pregunta" class="verja-pregunta"></p>
+        <input id="verja-respuesta" type="number" inputmode="numeric" class="verja-input" />
+        <button id="verja-ok" class="boton-gigante">Entrar</button>
+      </div>
+
+      <div id="padres-contenido" class="oculto">
+        <div class="stats-grid">
+          <div class="stat"><span class="stat-num" id="stat-tiempo">0</span><span>tiempo jugado</span></div>
+          <div class="stat"><span class="stat-num" id="stat-racha">0</span><span>racha</span></div>
+          <div class="stat"><span class="stat-num" id="stat-aprendidas">0</span><span>palabras aprendidas</span></div>
+          <div class="stat"><span class="stat-num" id="stat-precision">0%</span><span>precisión</span></div>
+          <div class="stat"><span class="stat-num" id="stat-progreso">0%</span><span>progreso general</span></div>
+        </div>
+        <h3>Palabras difíciles</h3>
+        <div id="stat-dificiles" class="chips"></div>
+        <button id="btn-reiniciar" class="boton-secundario peligro">🗑️ Reiniciar progreso</button>
+      </div>
+
+      <button id="btn-padres-volver" class="boton-secundario">⬅ Volver</button>
+    </section>
+
+  </div>
+
+  <!-- Scripts clásicos cargados en orden (sin ES-modules para funcionar al abrir el archivo). -->
+  <script src="data/words.js"></script>
+  <script src="src/storage.js"></script>
+  <script src="src/audio.js"></script>
+  <script src="src/feedback.js"></script>
+  <script src="src/scheduler.js"></script>
+  <script src="src/canvas.js"></script>
+  <script src="src/evaluator.js"></script>
+  <script src="src/world.js"></script>
+  <script src="src/rewards.js"></script>
+  <script src="src/dashboard.js"></script>
+  <script src="src/ui.js"></script>
+  <script src="src/main.js"></script>
+</body>
+</html>
