@@ -184,6 +184,16 @@
     }
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+  // Espera a que las fuentes estén cargadas antes de inicializar, para que el canvas
+  // dibuje las letras guía con Fredoka y no con la fuente de respaldo.
+  function waitFontsAndInit() {
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(init);
+    } else {
+      init();
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', waitFontsAndInit);
+  else waitFontsAndInit();
 })();
