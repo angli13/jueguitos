@@ -36,7 +36,7 @@
   var currentWord = null, currentBounds = null, currentSize = 0;
 
   function font(size) {
-    return 'bold ' + size + 'px "Comic Sans MS", "Trebuchet MS", "Segoe UI", system-ui, sans-serif';
+    return '600 ' + size + 'px Fredoka, "Trebuchet MS", "Segoe UI", system-ui, sans-serif';
   }
 
   function sizeCanvases() {
