@@ -425,7 +425,7 @@
     lastIdx = -1;
     $('#home').hidden = true;
     $('#pray').hidden = false;
-    if (!fromHistory) history.pushState({ pray: true }, '');
+    if (!fromHistory) { try { history.pushState({ pray: true }, ''); } catch (_) { /* marco sin historial */ } }
     keepAwake(true);
     go(state.session.step || 0, { instant: true });
     $('#stage').focus({ preventScroll: true });
